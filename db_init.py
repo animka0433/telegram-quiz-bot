@@ -17,9 +17,9 @@ for q in data:
         option2=q["options"][1],
         option3=q["options"][2],
         option4=q["options"][3],
-        correct_option=q["answer"]
+        correct_option=q["answer"],
+        explanation=q["explanation"]   # 🆕 new field
     ))
 
 session.commit()
-print("✅ Database ready!")
-
+print("✅ Database ready with explanations!")
