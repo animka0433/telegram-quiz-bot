@@ -21,6 +21,7 @@ class Question(Base):
     option3 = Column(String)
     option4 = Column(String)
     correct_option = Column(Integer)
+    explanation = Column(String)   # 🆕 Explanation added
 
 class UserQuizSession(Base):
     __tablename__ = "user_quiz_session"
