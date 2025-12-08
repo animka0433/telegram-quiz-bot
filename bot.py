@@ -6,14 +6,13 @@ from telegram.ext import (
     ApplicationBuilder, CommandHandler, CallbackQueryHandler,
     ContextTypes
 )
-from models import SessionLocal, Question, UserQuizSession
+from models import SessionLocal, Question
 
 load_dotenv()
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 
 logging.basicConfig(level=logging.INFO)
 
-# Active quiz sessions
 ACTIVE = {}
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -52,19 +51,25 @@ async def check_answer(update: Update, context: ContextTypes.DEFAULT_TYPE):
     data = ACTIVE[user_id]
     q = data["questions"][data["index"]]
 
+    # 🔥 NEW: explanation support
     if choice == q.correct_option:
+        reply = f"✅ Correct!\n\n📝 Explanation:\n{q.explanation}"
         data["score"] += 1
-        reply = "✅ Correct!"
     else:
-        reply = "❌ Wrong!"
+        reply = (
+            f"❌ Wrong!\n"
+            f"✔️ Correct Answer: Option {q.correct_option + 1}\n\n"
+            f"📝 Explanation:\n{q.explanation}"
+        )
 
     await query.edit_message_text(reply)
 
+    # next question
     data["index"] += 1
     if data["index"] >= len(data["questions"]):
         await context.bot.send_message(
             chat_id=user_id,
-            text=f"🎉 Quiz Over!\nYour score: {data['score']}/10",
+            text=f"🎉 Quiz Complete!\nYour score: {data['score']}/10",
         )
         del ACTIVE[user_id]
         return
