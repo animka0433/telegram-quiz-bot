@@ -14,8 +14,9 @@ for q in data:
         option3=q["options"][2],
         option4=q["options"][3],
         correct_option=q["answer"],
+        explanation=q["explanation"]  # 🆕
     ))
 
 session.commit()
-print("Imported", len(data), "questions!")
+print("Imported", len(data), "questions with explanations!")
 
